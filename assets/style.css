@@ -1,0 +1,24 @@
+main {
+    width: 90vw;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+#forecast .card {
+    width: 20%;
+    border: 2px solid red;
+}
+
+#forecast {
+    display: flex; 
+    justify-content: space-between;
+    flex-wrap: nowrap;
+
+}
+
+@media only screen and (max-width: 2200px) {
+   #forecast {
+    flex-direction: column;
+    width: 100%;
+   }
+}
