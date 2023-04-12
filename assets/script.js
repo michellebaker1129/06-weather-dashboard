@@ -50,9 +50,23 @@ function fetchDataFromApi(city) {
     });
 }
 
+// Function to render city buttons on the page
+function renderCityButtons(cities) {
+  // Create an array of city buttons using map
+  const cityButtons = cities.map((city) => {
+    // Wrap each button in a div with class "button-container" and set display property to block
+    return $(`<div class="button-container"><button class="btn btn-primary" data-city="${city.city}">${city.city}</button></div>`)
+  });
+  
+  console.log(cityButtons);
+  // Render the city buttons to the element with id "city-buttons"
+  $("#city-buttons").html(cityButtons);
+}
+
+
 function renderCityButtons(cities) {
   const cityButtons = cities.map((city) => {
-    return $(`<button class="btn btn-primary" data-city="${city.city}">${city.city}</button>`)
+    return $(`<div class="button-container"><button class="btn btn-primary" data-city="${city.city}">${city.city}</button></div>`)
   })
   console.log(cityButtons);
   $("#city-buttons").html(cityButtons);
