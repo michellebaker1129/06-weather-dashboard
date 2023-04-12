@@ -65,11 +65,14 @@ function renderCityButtons(cities) {
 
 
 function renderCityButtons(cities) {
+  // Create an array of city buttons using map
   const cityButtons = cities.map((city) => {
-    return $(`<div class="button-container"><button class="btn btn-primary" data-city="${city.city}">${city.city}</button></div>`)
-  })
-  console.log(cityButtons);
-  $("#city-buttons").html(cityButtons);
+    // Wrap each button in a div with class "button-container" and set display property to flex and flex-direction to column
+    return `<div class="button-container"><button class="btn btn-primary" data-city="${city.city}">${city.city}</button></div>`;
+  });
+  
+  // Render the city buttons to the element with id "city-buttons"
+  $("#city-buttons").html(cityButtons.join(""));
 }
 
 function renderInterface(weather, forecast) {

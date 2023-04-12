@@ -1,12 +1,17 @@
 :root {
-    --primary-color: #2196f3;
-    --secondary-color: #795548;
+    --primary-color: #f28f3b;
+    --secondary-color: #7a5c58;
+    --light-pink: #ffd5c2;
+    --lightest-color: #f5f5f5;
+    --highlight: #c8553d;
+
 }
 
 main {
     width: 90vw;
     margin: 0 auto;
     padding: 20px;
+    background-color: #f5f5f5;
 }
 
 #forecast .card {
@@ -21,7 +26,8 @@ main {
 
 /* Styling for city buttons */
 .button-container {
-    display: inline-block;
+    display: flex;
+    flex-direction: column;
     margin: 0.5rem;
 }
 
@@ -41,7 +47,7 @@ main {
 
   /* Styling for card elements */
 .card {
-    background-color: #f8f9fa; /* Light gray color */
+    background-color: #ffd5c2;
     border-radius: 0.5rem;
     padding: 1rem;
     margin-bottom: 1rem;
