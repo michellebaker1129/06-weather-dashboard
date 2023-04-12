@@ -18,11 +18,8 @@ THEN I am again presented with current and future conditions for that city
 
 don't show the same city more than once
 the buttons are persistent (show the locations we have already searched for (local storage))
-we will use multiple api calls
-ask for lat and long first
+
 use that response for next call User Story
-AS a freelance web developer
-I WANT to generate a simple logo for my projects
-SO THAT I don't have to pay a graphic designer
+
 
 // hard code in some buttons OR make buttons from local storage

@@ -1,18 +1,20 @@
 var cityFormEl = document.getElementById("city-form");
 var currentDate = dayjs();
 var key = "ee58e3e024677f636e675b8a11b6a05c";
+const localStorageCities = JSON.parse(localStorage.getItem("cities")) || [];
+const cities = [...localStorageCities];
+renderCityButtons(cities);
 
 // create a function to fetch all data for a city
 // hit all apis needed
 // save that data to local storage
-
-function getLatLon(city) {
-  console.log(city);
+function fetchDataFromApi(city) {
+  // fetch from weather geo api with city name
   fetch(
     "http://api.openweathermap.org/geo/1.0/direct?q=" +
-      city +
-      "&limit=5&appid=" +
-      key
+    city +
+    "&limit=5&appid=" +
+    key
   )
     .then((response) => {
       return response.json();
@@ -20,20 +22,60 @@ function getLatLon(city) {
     .then((data) => {
       var lat = data[0].lat;
       var lon = data[0].lon;
-      getWeather(lat, lon);
+
+      Promise.all([
+        fetch(
+          `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=imperial&appid=${key}`
+        ),
+        fetch(
+          `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&appid=${key}`
+        )
+      ]).then(([weather, forecast]) => {
+        return Promise.all([weather.json(), forecast.json()]);
+      })
+      .then(([weather, forecast]) => {
+        // save city name and weather data to local storage
+        var cityData = {
+          city,
+          weather,
+          forecast,
+        };
+        cities.unshift(cityData);
+        localStorage.setItem("cities", JSON.stringify(cities));
+        renderCityButtons(cities);
+        renderInterface(weather, forecast);
+      }).catch((err) => {
+        console.log(err);
+      });
     });
 }
 
-function getWeather(lat, lon) {
-  console.log(lat, lon);
-  fetch(
-    `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=imperial&appid=${key}`
-  )
-    .then((response) => response.json())
-    .then((data) => {
-      renderWeather(data);
-    });
-  get5DayForecast(lat, lon);
+function renderCityButtons(cities) {
+  const cityButtons = cities.map((city) => {
+    return $(`<button class="btn btn-primary" data-city="${city.city}">${city.city}</button>`)
+  })
+  console.log(cityButtons);
+  $("#city-buttons").html(cityButtons);
+}
+
+function renderInterface(weather, forecast) {
+  renderWeather(weather);
+  render5DayForecast(forecast);
+}
+
+function handleUserInput(city) {
+  // see if city is in cities array, if so, just render that data
+  const foundCity = cities.find((c) => {
+    return c.city.toLowerCase() === city.toLowerCase();
+  });
+
+  if (foundCity) {
+    // render data
+    renderInterface(foundCity.weather, foundCity.forecast)
+  } else {
+    // if not, then fetch data from api
+    fetchDataFromApi(city)
+  }
 }
 
 // create a function to render weather information on the page
@@ -61,18 +103,6 @@ function renderWeather(data) {
       cardBody.append(tempEl, humidityEl, windSpeedEl)
     )
   );
-}
-
-function get5DayForecast(lat, lon) {
-  console.log(lat, lon);
-  fetch(
-    `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&appid=${key}`
-  )
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-      render5DayForecast(data);
-    });
 }
 
 // create a function to render 5 day forcast on the page
@@ -119,6 +149,13 @@ function render5DayForecast(data) {
 cityFormEl.addEventListener("submit", function (event) {
   event.preventDefault();
   var cityName = document.getElementById("city").value;
-  getLatLon(cityName);
+  handleUserInput(cityName);
   // save city name to local storage
+});
+
+// add event listener to city buttons
+$("#city-buttons").on("click", "button", function (event) {
+  event.preventDefault();
+  const city = $(this).attr("data-city");
+  handleUserInput(city);
 });
